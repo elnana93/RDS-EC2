@@ -56,3 +56,19 @@ variable "public_subnet" {
     "public_c" = { cidr_block = "10.50.3.0/24", az = "us-west-2c", is_public = true }
   }
 }
+
+
+variable "private_subnet" {
+  description = "Configuration for the private subnets in the VPC."
+  type = map(object({
+    cidr_block = string
+    az         = string
+    is_public  = bool
+  }))
+  default = {
+    "private_a" = { cidr_block = "10.50.11.0/24", az = "us-west-2a", is_public = false }
+    "private_b" = { cidr_block = "10.50.12.0/24", az = "us-west-2b", is_public = false }
+    "private_c" = { cidr_block = "10.50.13.0/24", az = "us-west-2c", is_public = false }
+  }
+}
+

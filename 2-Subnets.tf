@@ -13,22 +13,44 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.vpc["myvpc"].id
+
+}
 #Route tables and IGW would be defined here for public subnets
 #Do it ASAP Finish this!!!!
 
 
 
+resource "aws_subnet" "private_subnet" {
+  for_each = var.private_subnet
 
+  vpc_id            = aws_vpc.vpc["myvpc"].id
+  cidr_block        = each.value.cidr_block
+  availability_zone = each.value.az
 
-/* resource "aws_subnet" "private_subnet" {
-  vpc_id                  = aws_vpc.vpc["myvpc"].id
-  cidr_block              = var.vpcs["myvpc"].subnet_cidrs["private_a"]
-  availability_zone       = "us-west-2a"
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = each.value.is_public
 
   tags = {
-    Name    = "private_subnet"
+    Name    = "private_subnet-${each.key}"
     Network = "Private"
   }
 }
- */
+
+
+
+resource "aws_eip" "nat" {
+  domain = "vpc"
+
+  tags = {
+    Name = "nat"
+  }
+}
+
+
+#You need a public sebnet for a NAT in order to talk to the internet
+#A private subnet won't work because it doesnt have route to the Internet Gateway
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public_subnet["public_b"].id
+}

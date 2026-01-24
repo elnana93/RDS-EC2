@@ -56,19 +56,6 @@ variable "ssh_cidr_blocks" {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Variables for EC2 {lab_ec2_app}
 
 variable "instance_name" {

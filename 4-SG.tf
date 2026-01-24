@@ -34,8 +34,6 @@ resource "aws_security_group" "sg_ec2_lab" {
   }
 }
 
-
-
 resource "aws_security_group" "sg_rds_lab" {
   name   = "sgroup-rds-lab"
   vpc_id = aws_vpc.vpc["myvpc"].id

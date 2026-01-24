@@ -35,14 +35,15 @@ resource "aws_instance" "lab_ec2_app" {
 
   # inside your aws_instance resource:
   user_data = <<-EOF
-    #!/bin/bash
-    set -euxo pipefail
+#!/bin/bash
+set -euxo pipefail
 
-    echo '${local.startup_b64}' | base64 -d > /usr/local/bin/startup.sh
-    chmod +x /usr/local/bin/startup.sh
+printf '%s' '${local.startup_b64}' | base64 -d > /usr/local/bin/startup.sh
+chmod +x /usr/local/bin/startup.sh
 
-    /usr/local/bin/startup.sh > /var/log/startup.log 2>&1
-  EOF
+/usr/local/bin/startup.sh > /var/log/startup.log 2>&1
+EOF
+
 
 }
 
@@ -69,7 +70,6 @@ resource "aws_iam_instance_profile" "lab_ec2_profile" {
 output "lab_ec2_instance_profile_name" {
   value = aws_iam_instance_profile.lab_ec2_profile.name
 }
-
 
 output "lab_ec2_public_ip" {
   value = aws_instance.lab_ec2_app.public_ip

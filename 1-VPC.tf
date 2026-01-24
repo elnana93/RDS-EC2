@@ -5,7 +5,6 @@ resource "aws_vpc" "vpc" {
   tags       = each.value.tags
 }
 
-
 output "vpc_ids" {
   description = "A map of VPC names to their IDs."
   value = {

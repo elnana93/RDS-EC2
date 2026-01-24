@@ -7,27 +7,6 @@ variable "aws_region" {
   default     = "us-west-2"
 }
 
-#VPC's
-
-/* variable "vpcs" {
-  description = "A map defining the name, CIDR block, and tags for each VPC."
-  type = map(object({
-    cidr_block = string
-    tags       = map(string)
-  }))
-
-  default = {
-    app1 = {
-      cidr_block = "10.50.0.0/16"
-      tags       = {
-        Name        = "myvpc"
-        Environment = "RDS-VPC"
-      }
-    }
-  }
-} */
-
-
 variable "vpcs" {
   description = "A map defining the name, CIDR block, and tags for each VPC."
   type = map(object({
@@ -42,7 +21,6 @@ variable "vpcs" {
   }
 }
 
-
 variable "public_subnet" {
   description = "Configuration for the public subnets in the VPC."
   type = map(object({
@@ -56,7 +34,6 @@ variable "public_subnet" {
     "public_c" = { cidr_block = "10.50.3.0/24", az = "us-west-2c", is_public = true }
   }
 }
-
 
 variable "private_subnet" {
   description = "Configuration for the private subnets in the VPC."

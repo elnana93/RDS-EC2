@@ -20,8 +20,6 @@ resource "aws_internet_gateway" "igw" {
 #Route tables and IGW would be defined here for public subnets
 #Do it ASAP Finish this!!!!
 
-
-
 resource "aws_subnet" "private_subnet" {
   for_each = var.private_subnet
 
@@ -37,16 +35,12 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
-
-
 resource "aws_eip" "nat" {
   domain = "vpc"
-
   tags = {
     Name = "nat"
   }
 }
-
 
 #You need a public sebnet for a NAT in order to talk to the internet
 #A private subnet won't work because it doesnt have route to the Internet Gateway

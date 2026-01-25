@@ -80,6 +80,13 @@ resource "aws_iam_role_policy" "lab_ec2_permissions" {
         Resource = "*"
       },
 
+      # To get my secrets
+      {
+        Effect   = "Allow"
+        Action   = ["secretsmanager:ListSecrets"]
+        Resource = "*"
+      },
+
       # Allow basic EC2 read-only troubleshooting from inside the instance
       {
         Effect = "Allow"
@@ -90,11 +97,10 @@ resource "aws_iam_role_policy" "lab_ec2_permissions" {
           "ec2:DescribeRouteTables",
           "ec2:DescribeVpcs"
         ]
-        Resource = "*" # once you have your secret created, replace Resource="*" with that secret’s ARN.
-                      # using this command- aws ec2 describe-security-groups --region us-west-2 --output table
-
+        Resource = "*"
       },
-      # ✅ ADD THIS NEW BLOCK (RDS describe)
+
+      # RDS describe permissions for troubleshooting
       {
         Effect = "Allow"
         Action = [
@@ -130,7 +136,6 @@ output "lab_ec2_public_dns" {
 output "lab_ec2_public_url" {
   value = "http://${coalesce(aws_instance.lab_ec2_app.public_dns, aws_instance.lab_ec2_app.public_ip)}"
 }
-
 
 output "lab_ec2_ssh_command" {
   description = "SSH command to connect to the EC2 instance (Amazon Linux 2023)."

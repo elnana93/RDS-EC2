@@ -1,7 +1,7 @@
 
 /*
 
-git commit -m "Updated Version"
+git commit -m "Verified Checklist for Ec2, RDS, & Security Groups"
 
 curl -I http://ec2-16-147-224-181.us-west-2.compute.amazonaws.com
 
@@ -116,6 +116,36 @@ Check if RDS is publicly reachable (quick flag)
 
 Expected output: false
 ______________________________________________________________
+Verify Secrets Manager (Existence, Metadata, Access)
+
+    aws secretsmanager list-secrets \
+      --region us-west-2 \
+      --query "SecretList[].{Name:Name,ARN:ARN,Rotation:RotationEnabled}" \
+      --output table
+
+What you’re verifying
+    Secret exists
+    Rotation state is known
+    Naming is intentional
+
+______________________________________________________________
+Describe a specific secret (NO value exposure)
+
+    aws secretsmanager describe-secret \
+  --secret-id lab/rds/mysql \
+  --region us-west-2 \
+  --output json
+
+
+
+
+Key fields to check
+    RotationEnabled
+    KmsKeyId
+    LastChangedDate
+    LastAccessedDate
+
+This command is always safe. It does not expose the secret value.
 
 
  */

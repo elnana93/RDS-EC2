@@ -8,6 +8,9 @@ resource "random_password" "db" {
 # Create the secret container
 resource "aws_secretsmanager_secret" "rds_mysql" {
   name = "lab/rds/mysql"
+  recovery_window_in_days = 0 # No recovery window for lab purposes
+
+  #lifecycle { prevent_destroy = true} use this in the office
 }
 
 # Put the secret value (JSON) into Secrets Manager

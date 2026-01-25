@@ -1,7 +1,7 @@
 
 /*
 
-git commit -m "Verified Checklist for Ec2, RDS, & Security Groups"
+git commit -m "Almost done with the lab"
 
 curl -I http://ec2-16-147-224-181.us-west-2.compute.amazonaws.com
 

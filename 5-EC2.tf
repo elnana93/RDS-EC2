@@ -47,7 +47,7 @@ EOF
 
 }
 
-# IAM Role (EC2 can assume it)
+# Role (trust policy ONLY)
 resource "aws_iam_role" "lab_ec2_role" {
   name = "lab-ec2-secrets-role"
 
@@ -60,6 +60,54 @@ resource "aws_iam_role" "lab_ec2_role" {
     }]
   })
 }
+
+# Permissions (what the role can do)
+resource "aws_iam_role_policy" "lab_ec2_permissions" {
+  name = "lab-ec2-permissions"
+  role = aws_iam_role.lab_ec2_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      # Allow your EC2 instance to read the DB secret
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ]
+        # Tighten this to your real secret ARN if you have it
+        Resource = "*"
+      },
+
+      # Allow basic EC2 read-only troubleshooting from inside the instance
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:DescribeInstances",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeRouteTables",
+          "ec2:DescribeVpcs"
+        ]
+        Resource = "*" # once you have your secret created, replace Resource="*" with that secret’s ARN.
+                      # using this command- aws ec2 describe-security-groups --region us-west-2 --output table
+
+      },
+      # ✅ ADD THIS NEW BLOCK (RDS describe)
+      {
+        Effect = "Allow"
+        Action = [
+          "rds:DescribeDBInstances",
+          "rds:DescribeDBSubnetGroups"
+        ]
+        Resource = "*"
+      }
+
+    ]
+  })
+}
+
 
 # Instance Profile (this is what EC2 attaches)
 resource "aws_iam_instance_profile" "lab_ec2_profile" {

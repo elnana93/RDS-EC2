@@ -52,8 +52,11 @@ variable "private_subnet" {
 variable "ssh_cidr_blocks" {
   description = "CIDR blocks allowed to SSH (port 22). Use your public IP /32."
   type        = list(string)
-  default     = ["172.216.11.28/32"] # CHANGE to ["your.ip.address/32"] for safety
+  default     = ["45.86.208.27/32"] # CHANGE to ["your.ip.address/32"] for safety
 }
+
+
+
 
 
 # Variables for EC2 {lab_ec2_app}

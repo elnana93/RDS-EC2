@@ -2,7 +2,7 @@
 
 resource "aws_security_group" "sg_ec2_lab" {
   name        = "sgroup-ec2-lab"
-  description = "Allow SSH and 3306"
+  description = "Allow SSH and HTTP"
   vpc_id      = aws_vpc.vpc["myvpc"].id
 
   ingress {
@@ -35,8 +35,9 @@ resource "aws_security_group" "sg_ec2_lab" {
 }
 
 resource "aws_security_group" "sg_rds_lab" {
-  name   = "sgroup-rds-lab"
-  vpc_id = aws_vpc.vpc["myvpc"].id
+  name        = "sgroup-rds-lab"
+  description = "Allow MySQL from EC2 SG only"
+  vpc_id      = aws_vpc.vpc["myvpc"].id
 
   # ✅ Allow MySQL from EC2 SG only
   ingress {

@@ -12,11 +12,6 @@ locals {
 }
 
 
-
-
-
-
-
 # Generate a strong password
 # Generate a strong password
 resource "random_password" "db" {
@@ -55,10 +50,6 @@ resource "aws_secretsmanager_secret_version" "rds_mysql" {
     ignore_changes = [secret_string]
   }
 }
-
-
-
-
 
 
 resource "aws_cloudformation_stack" "rds_mysql_rotation" {
@@ -117,141 +108,3 @@ resource "aws_cloudformation_stack" "rds_mysql_rotation" {
     RotationDays = 30
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* 
-
-resource "aws_secretsmanager_secret_rotation" "rds_rotation" {
-  # Use the ID from the version to ensure initial data exists first
-  secret_id           = aws_secretsmanager_secret_version.rds_mysql.secret_id
-  rotation_lambda_arn = aws_serverlessapplicationrepository_cloudformation_stack.mysql_rotator.outputs.RotationLambdaARN
-
-  rotation_rules {
-    automatically_after_days = 30
-  }
-}
-
-
-# This pulls the official AWS RDS MySQL rotation template
-resource "aws_serverlessapplicationrepository_cloudformation_stack" "mysql_rotator" {
-  name           = "Rotate-RDS-MySQL-Lab"
-  application_id = "arn:aws:serverlessrepo:us-west-2:297356107811:applications/SecretsManagerRDSMySQLRotationSingleUser"
-  capabilities   = ["CAPABILITY_IAM", "CAPABILITY_RESOURCE_POLICY"]
-  
-  parameters = {
-    endpoint = "https://secretsmanager.${var.aws_region}.amazonaws.com"
-    functionName        = "rds-mysql-rotator"
-    #vpcSubnetIds        = join(",", var.private_subnets)
-    vpcSecurityGroupIds = aws_security_group.rotation_lambda_sg.id
-  }
-}
- */
-
-
-
-/* 
-variable "rotation_lambda_arn" {
-  type        = string
-  description = "The ARN of the Lambda function that rotates the secret"
-}
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* # Enable rotation for the existing secret: lab/rds/mysql
-resource "aws_secretsmanager_secret_rotation" "lab_rds_mysql" {
-  secret_id           = aws_secretsmanager_secret.rds_mysql.id
-  rotation_lambda_arn = aws_lambda_function.secretsmanager_rotation_mysql.arn
-
-  # Console "Schedule expression builder" -> Hours: 24
-  rotation_rules {
-    schedule_expression = "rate(24 hours)"
-    # Console "Window duration" -> 4h
-    duration = "4h"
-  }
-
-  # Console checkbox: "Rotate immediately when the secret is stored"
-  rotate_immediately = true
-}
- */
-
-
-
-
-/* 
-resource "aws_secretsmanager_secret_target_attachment" "db_attachment" {
-  secret_id  = aws_secretsmanager_secret.rds_mysql.id
-  target_id  = aws_db_instance.lab_mysql.id
-  target_type = "AWS::RDS::DBInstance"
-} */

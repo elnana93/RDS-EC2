@@ -144,6 +144,13 @@ Describe a specific secret (NO value exposure)
 
 
 
+aws secretsmanager get-resource-policy \
+      --secret-id lab/rds/mysql \
+      --region us-west-2 \
+      --output json
+
+
+
 
 Key fields to check
     RotationEnabled

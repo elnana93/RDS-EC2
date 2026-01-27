@@ -62,7 +62,7 @@ resource "aws_iam_role_policy" "lab_ec2_permissions" {
           "rds:DescribeDBSubnetGroups"
         ]
         Resource = "*"
-      } ,
+      },
 
 
       # Allow EC2 to read Lambda config (verification / troubleshooting)
@@ -74,7 +74,16 @@ resource "aws_iam_role_policy" "lab_ec2_permissions" {
           "lambda:GetFunction"
         ]
         Resource = "arn:aws:lambda:us-west-2:676373376093:function:RotationSchedule-MySQLSingleUser-Lambda"
+      },
+
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetResourcePolicy"
+        ]
+        Resource = "arn:aws:secretsmanager:us-west-2:676373376093:secret:lab/rds/mysql-*"
       }
+
 
     ]
   })

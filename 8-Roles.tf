@@ -62,7 +62,7 @@ resource "aws_iam_role_policy" "lab_ec2_permissions" {
           "rds:DescribeDBSubnetGroups"
         ]
         Resource = "*"
-      } /* ,
+      } ,
 
 
       # Allow EC2 to read Lambda config (verification / troubleshooting)
@@ -73,8 +73,8 @@ resource "aws_iam_role_policy" "lab_ec2_permissions" {
           "lambda:GetFunctionConfiguration",
           "lambda:GetFunction"
         ]
-        Resource = "arn:aws:lambda:us-west-2:676373376093:function:rotation_lambda_sg"
-      } */
+        Resource = "arn:aws:lambda:us-west-2:676373376093:function:RotationSchedule-MySQLSingleUser-Lambda"
+      }
 
     ]
   })
@@ -138,23 +138,29 @@ resource "aws_iam_role_policy_attachment" "rotation_vpc" {
 }
 
 
-# Secrets Manager permissions (scoped to ONE secret)
 resource "aws_iam_role_policy" "rotation_secrets" {
   name = "rotation-secrets-policy"
   role = aws_iam_role.rotation_lambda_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Action = [
-        "secretsmanager:DescribeSecret",
-        "secretsmanager:GetSecretValue",
-        "secretsmanager:PutSecretValue",
-        "secretsmanager:UpdateSecretVersionStage",
-        "secretsmanager:GetRandomPassword"
-      ]
-      Resource = "*"
-    }]
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:PutSecretValue",
+          "secretsmanager:UpdateSecretVersionStage",
+          "secretsmanager:ListSecretVersionIds"
+        ]
+        Resource = aws_secretsmanager_secret.rds_mysql.arn
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["secretsmanager:GetRandomPassword"]
+        Resource = "*"
+      }
+    ]
   })
 }

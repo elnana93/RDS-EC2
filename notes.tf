@@ -1,7 +1,7 @@
 
 /*
 
-git commit -m "Fixed the secret scheluded for deletion error"
+git commit -m "NEW"
 
 curl -I http://ec2-16-147-224-181.us-west-2.compute.amazonaws.com
 
@@ -156,13 +156,37 @@ This command is always safe. It does not expose the secret value.
 
 
 aws lambda get-function-configuration \
-  --function-name rotation_lambda_sg \
+  --function-name RotationSchedule-MySQLSingleUser-Lambda \
   --region us-west-2 \
   --query 'VpcConfig.SecurityGroupIds' \
   --output table
 
 
+aws secretsmanager describe-secret \
+  --secret-id arn:aws:secretsmanager:us-west-2:676373376093:secret:lab/rds/mysql-vKvHeQ \
+  --region us-west-2 \
+  --query '{RotationEnabled:RotationEnabled, RotationLambdaARN:RotationLambdaARN}' \
+  --output table
 
+
+
+
+_______________________________________________________________
+
+
+aws lambda get-function-configuration \
+  --function-name RotationSchedule-MySQLSingleUser-Lambda \
+  --region us-west-2 \
+  --query 'VpcConfig' \
+  --output table
+
+
+
+aws lambda get-function-configuration \
+  --function-name RotationSchedule-MySQLSingleUser-Lambda \
+  --region us-west-2 \
+  --query 'VpcConfig.{Subnets:SubnetIds,SecurityGroups:SecurityGroupIds,VpcId:VpcId}' \
+  --output table
 
 
 

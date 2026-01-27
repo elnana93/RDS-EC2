@@ -1,7 +1,7 @@
 
 /*
 
-git commit -m "Almost done with the lab"
+git commit -m "Fixed the secret scheluded for deletion error"
 
 curl -I http://ec2-16-147-224-181.us-west-2.compute.amazonaws.com
 
@@ -105,6 +105,7 @@ Verify RDS subnet placement
     Correct AZ spread
 
     ______________________________________________________________
+
     Verify Network Exposure (Fast Sanity Checks)
 Check if RDS is publicly reachable (quick flag)
 
@@ -115,6 +116,11 @@ Check if RDS is publicly reachable (quick flag)
       --output text
 
 Expected output: false
+
+
+
+
+
 ______________________________________________________________
 Verify Secrets Manager (Existence, Metadata, Access)
 
@@ -146,6 +152,20 @@ Key fields to check
     LastAccessedDate
 
 This command is always safe. It does not expose the secret value.
+
+
+
+aws lambda get-function-configuration \
+  --function-name rotation_lambda_sg \
+  --region us-west-2 \
+  --query 'VpcConfig.SecurityGroupIds' \
+  --output table
+
+
+
+
+
+
 
 
  */

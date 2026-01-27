@@ -34,20 +34,30 @@ resource "aws_security_group" "sg_ec2_lab" {
   }
 }
 
+
+
+
 resource "aws_security_group" "sg_rds_lab" {
   name        = "sgroup-rds-lab"
-  description = "Allow MySQL from EC2 SG only"
+  description = "Allow MySQL from EC2 and Rotation Lambda"
   vpc_id      = aws_vpc.vpc["myvpc"].id
 
-  # ✅ Allow MySQL from EC2 SG only
+  # EC2 -> RDS
   ingress {
     description     = "MySQL from EC2"
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
     security_groups = [aws_security_group.sg_ec2_lab.id]
+  }
 
-    # No need to create a separate security_group_rule resource. 
+  # Lambda -> RDS (rotation)
+  ingress {
+    description     = "MySQL from Rotation Lambda"
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = [aws_security_group.rotation_lambda_sg.id]
   }
 
   egress {
@@ -58,7 +68,26 @@ resource "aws_security_group" "sg_rds_lab" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "sg-rds-lab"
+  tags = { Name = "sg-rds-lab" }
+}
+
+
+
+
+
+
+resource "aws_security_group" "rotation_lambda_sg" {
+  name        = "sgroup-lambda-rotation"
+  description = "Security group for Secrets Manager rotation Lambda"
+  vpc_id      = aws_vpc.vpc["myvpc"].id
+
+  # No inbound rules needed (Lambda doesn't accept inbound from the internet)
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = { Name = "sg-lambda-rotation" }
 }

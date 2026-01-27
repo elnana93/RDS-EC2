@@ -51,7 +51,7 @@ app = Flask(__name__)
 
 @app.get("/")
 def home():
-    return "Operation Escape Matrix!!!!!!!!!!!\n"
+    return "You somalis always assuming shit!!!!!!!!!!!\n"
 
 @app.get("/init")
 def init():

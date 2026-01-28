@@ -28,6 +28,16 @@ resource "aws_secretsmanager_secret" "rds_mysql" {
   name                    = "lab/rds/mysql"
   recovery_window_in_days = 0 # No recovery window for lab purposes
 
+
+  tags = {
+    Name = "lab-rds-mysql"
+  }
+  /* tags = {
+
+    SecretAccess = "lab-rds-mysql"
+
+  }  */
+
   #lifecycle { prevent_destroy = true} #use this in the office
 }
 
@@ -108,3 +118,42 @@ resource "aws_cloudformation_stack" "rds_mysql_rotation" {
     RotationDays = 30
   }
 }
+
+
+data "aws_secretsmanager_secret_rotation" "mysql_rotation_cfg" {
+  secret_id  = aws_secretsmanager_secret.rds_mysql.arn
+  depends_on = [aws_cloudformation_stack.rds_mysql_rotation]
+}
+
+output "rotation_lambda_name_from_secret" {
+  value = try(
+    split(":", split("function:", data.aws_secretsmanager_secret_rotation.mysql_rotation_cfg.rotation_lambda_arn)[1])[0],
+    null
+  )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+output "rds_mysql_rotation_stack_outputs" {
+  value = aws_cloudformation_stack.rds_mysql_rotation.outputs
+} */
+
+
+/* output "rotation_lambda_name" {
+  value = aws_cloudformation_stack.rds_mysql_rotation.outputs["RotationLambdaName"]
+}
+
+output "rotation_lambda_arn" {
+  value = aws_cloudformation_stack.rds_mysql_rotation.outputs["RotationLambdaArn"]
+}
+ */

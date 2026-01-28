@@ -1,7 +1,7 @@
 
 /*
 
-git commit -m "NEW"
+git commit -m "Updated"
 
 curl -I http://ec2-16-147-224-181.us-west-2.compute.amazonaws.com
 
@@ -124,10 +124,12 @@ Expected output: false
 ______________________________________________________________
 Verify Secrets Manager (Existence, Metadata, Access)
 
-    aws secretsmanager list-secrets \
-      --region us-west-2 \
-      --query "SecretList[].{Name:Name,ARN:ARN,Rotation:RotationEnabled}" \
-      --output table
+   aws secretsmanager describe-secret \
+  --secret-id lab/rds/mysql \
+  --region us-west-2 \
+  --query "{Name:Name,ARN:ARN,RotationEnabled:RotationEnabled,RotationLambdaARN:RotationLambdaARN}" \
+  --output table
+
 
 What you’re verifying
     Secret exists
@@ -170,7 +172,7 @@ aws lambda get-function-configuration \
 
 
 aws secretsmanager describe-secret \
-  --secret-id arn:aws:secretsmanager:us-west-2:676373376093:secret:lab/rds/mysql-vKvHeQ \
+  --secret-id arn:aws:secretsmanager:us-west-2:676373376093:secret:lab/rds/mysql-BxFfMI \
   --region us-west-2 \
   --query '{RotationEnabled:RotationEnabled, RotationLambdaARN:RotationLambdaARN}' \
   --output table
@@ -196,7 +198,17 @@ aws lambda get-function-configuration \
   --output table
 
 
+aws secretsmanager get-resource-policy \
+      --secret-id lab/rds/mysql \
+      --region us-west-2 \
+      --output json
 
+
+ aws ec2 describe-instances \
+      --filters Name=tag:Name,Values=MyInstance \
+      --region us-west-2 \
+      --query "Reservations[].Instances[].InstanceId" \
+      --output text
 
 
  */
@@ -204,3 +216,89 @@ aws lambda get-function-configuration \
 
 
 
+/* 
+Come back for this 
+
+aws iam get-role-policy \
+  --role-name lab-ec2-secrets-role \
+  --policy-name lab-ec2-permissions \
+  --query 'PolicyDocument.Statement' \
+  --output json
+
+
+
+aws ec2 describe-instances \
+  --filters "Name=instance-state-name,Values=running" \
+  --region us-west-2 \
+  --query "Reservations[].Instances[].{InstanceId:InstanceId,State:State.Name,Name:Tags[?Key=='Name']|[0].Value,PrivateIp:PrivateIpAddress,PublicIp:PublicIpAddress}" \
+  --output table
+
+
+aws ec2 describe-instances \
+  --filters "Name=tag:Name,Values=lab_ec2_app" "Name=instance-state-name,Values=running" \
+  --region us-west-2 \
+  --query "Reservations[].Instances[].{InstanceId:InstanceId,Name:Tags[?Key=='Name']|[0].Value}" \
+  --output table
+
+
+
+aws iam get-instance-profile \
+      --instance-profile-name lab_ec2_profile \
+      --query "InstanceProfile.Roles[].RoleName" \
+      --output text
+
+
+ aws secretsmanager describe-secret \
+      --secret-id lab/rds/mysql \
+      --region us-west-2
+
+ 
+
+
+
+aws iam get-policy-version \
+      --policy-arn arn:aws:iam::aws:policy/SecretsManagerReadWrite \
+      --version-id v5 \
+      --output json
+
+
+
+aws ec2 describe-instances \
+  --instance-ids i-099e73181e5810705 \
+  --region us-west-2 \
+  --query "Reservations[0].Instances[0].SecurityGroups" \
+  --output table
+
+
+
+
+
+
+ */
+
+
+
+/* 
+
+ Verify IAM Role Permissions (Critical)
+List policies attached to the role
+
+ 
+ aws iam list-attached-role-policies \
+  --role-name lab-ec2-secrets-role \
+  --output table
+
+
+aws iam list-role-policies \
+  --role-name lab-ec2-secrets-role \
+  --output table
+
+
+aws iam get-role-policy \
+  --role-name lab-ec2-secrets-role \
+  --policy-name lab-ec2-permissions \
+  --output json
+ 
+ 
+ 
+  */

@@ -20,6 +20,7 @@ resource "aws_instance" "lab_ec2_app" {
   key_name             = var.key_name
   iam_instance_profile = aws_iam_instance_profile.lab_ec2_profile.name
 
+
   vpc_security_group_ids = [aws_security_group.sg_ec2_lab.id]
   subnet_id              = aws_subnet.public_subnet["public_a"].id
 

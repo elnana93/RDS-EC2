@@ -8,6 +8,6 @@ resource "aws_vpc" "vpc" {
 output "vpc_ids" {
   description = "A map of VPC names to their IDs."
   value = {
-    app1_id = aws_vpc.vpc["myvpc"].id
+    myvpc_id = aws_vpc.vpc["myvpc"].id
   }
 }

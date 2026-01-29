@@ -1,7 +1,7 @@
 
 /*
 
-git commit -m "Updated"
+git commit -m "Needs to be Cleaned Up, but it Works"
 
 curl -I http://ec2-16-147-224-181.us-west-2.compute.amazonaws.com
 
@@ -300,5 +300,32 @@ aws iam get-role-policy \
   --output json
  
  
+
+
+
+
+
+
+
+ aws ec2 describe-security-groups \
+      --group-ids sg-0ad075d8ad2c70307 \
+      --region us-west-2 \
+      --query "SecurityGroups[].IpPermissions"
  
   */
+
+
+
+  /* 
+  
+  Or whatever the public IP is
+  
+  http://44.245.215.32/
+
+  http://44.245.215.32/init
+
+  http://44.245.215.32/add?note=first_note
+
+  http://44.245.215.32/list
+  
+   */
